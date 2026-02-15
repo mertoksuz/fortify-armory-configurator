@@ -631,25 +631,26 @@ function addGunToCanvas() {
     // Position near existing guns if any
     const targetLayer = isVertical ? 'top' : state.activeLayer;
     const existingGuns = state.layers[targetLayer].filter(i => i.type === 'gun' && !i.isShadow);
-    let startX = boundsRect.x + 20;
-    let startY = boundsRect.y + 20;
+    const gridPx = GRID_SIZE * state.scale;
+    let startX = boundsRect.x + Math.round(20 / gridPx) * gridPx;
+    let startY = boundsRect.y + Math.round(20 / gridPx) * gridPx;
 
     if (existingGuns.length > 0) {
         // Find the rightmost gun edge
         const lastGun = existingGuns[existingGuns.length - 1];
         const lastRight = lastGun.x + lastGun.wMM * state.scale;
-        const gap = 15; // px gap between guns
+        const gap = Math.ceil(15 / gridPx) * gridPx; // snap gap to grid
 
         // Check if it fits to the right of the last gun
         if (lastRight + gap + itemW * state.scale <= boundsRect.x + boundsRect.w) {
-            startX = lastRight + gap;
+            startX = Math.round((lastRight + gap - boundsRect.x) / gridPx) * gridPx + boundsRect.x;
             startY = lastGun.y;
         } else {
             // Doesn't fit horizontally — try below the last gun
             const lastBottom = lastGun.y + lastGun.hMM * state.scale;
             if (lastBottom + gap + itemH * state.scale <= boundsRect.y + boundsRect.h) {
-                startX = boundsRect.x + 20;
-                startY = lastBottom + gap;
+                startX = boundsRect.x + Math.round(20 / gridPx) * gridPx;
+                startY = Math.round((lastBottom + gap - boundsRect.y) / gridPx) * gridPx + boundsRect.y;
             }
         }
     }
@@ -758,8 +759,8 @@ function addItemToCanvas(type) {
         orientation: isMagVertical ? 'vertical' : 'horizontal',
         isVertical: isMagVertical,
         shadowId: null,
-        x: boundsRect.x + 30 + Math.random() * 60,
-        y: boundsRect.y + 20 + Math.random() * 60,
+        x: Math.round((30 + Math.random() * 60) / (GRID_SIZE * state.scale)) * (GRID_SIZE * state.scale) + boundsRect.x,
+        y: Math.round((20 + Math.random() * 60) / (GRID_SIZE * state.scale)) * (GRID_SIZE * state.scale) + boundsRect.y,
         rotation: 0,
         color: def.color, stroke: def.stroke,
         isRound: def.isRound || false,
@@ -840,17 +841,17 @@ function createCanvasItem(item) {
         group.add(new Konva.Rect({ x: 0, y: 0, width: w, height: h, fill: item.color, stroke: item.stroke, strokeWidth: 1.5, cornerRadius: 3, name: 'itemShape' }));
     }
 
-    // Label
+    // Label (listening disabled so labels don't block clicks on items beneath)
     const labelSize = Math.max(8, Math.min(11, w / 10));
-    group.add(new Konva.Text({ x: 2, y: h + 6, text: item.name, fontSize: labelSize, fill: '#888', fontFamily: 'Inter', width: w, name: 'itemLabel' }));
-    group.add(new Konva.Text({ x: 2, y: h + 6 + labelSize + 2, text: `${item.wMM}×${item.hMM}×${item.dMM || '?'}mm`, fontSize: 9, fill: '#555', fontFamily: 'Inter', name: 'dimLabel' }));
+    group.add(new Konva.Text({ x: 2, y: h + 6, text: item.name, fontSize: labelSize, fill: '#888', fontFamily: 'Inter', width: w, name: 'itemLabel', listening: false }));
+    group.add(new Konva.Text({ x: 2, y: h + 6 + labelSize + 2, text: `${item.wMM}×${item.hMM}×${item.dMM || '?'}mm`, fontSize: 9, fill: '#555', fontFamily: 'Inter', name: 'dimLabel', listening: false }));
 
-    // Selection highlight
+    // Selection highlight (listening disabled — purely visual)
     group.add(new Konva.Rect({
         x: -cutoutPad - 2, y: -cutoutPad - 2,
         width: w + cutoutPad * 2 + 4, height: h + cutoutPad * 2 + 4,
         stroke: '#E87A1E', strokeWidth: 2, dash: [6, 3],
-        visible: false, name: 'selectionRect'
+        visible: false, name: 'selectionRect', listening: false
     }));
 
     // ===== ROTATION HANDLE (top-center) =====
@@ -864,11 +865,11 @@ function createCanvasItem(item) {
             visible: false
         });
 
-        // Stem line from item to handle
+        // Stem line from item to handle (listening disabled — purely visual)
         group.add(new Konva.Line({
             points: [w / 2, -cutoutPad, w / 2, rotHandleY + rotHandleSize / 2],
             stroke: '#4CAF50', strokeWidth: 1.5, dash: [3, 2],
-            visible: false, name: 'rotateStem'
+            visible: false, name: 'rotateStem', listening: false
         }));
 
         rotHandle.add(new Konva.Circle({
