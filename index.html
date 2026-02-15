@@ -219,11 +219,11 @@
                 <div class="canvas-area">
                     <!-- Layer Tabs -->
                     <div class="layer-tabs">
-                        <button class="layer-tab active" data-layer="bottom" onclick="switchLayer('bottom')">
+                        <button class="layer-tab" data-layer="bottom" onclick="switchLayer('bottom')">
                             <span class="material-icons">layers</span>
                             Alt Katman
                         </button>
-                        <button class="layer-tab" data-layer="top" onclick="switchLayer('top')">
+                        <button class="layer-tab active" data-layer="top" onclick="switchLayer('top')">
                             <span class="material-icons">layers</span>
                             Üst Katman
                         </button>
@@ -242,7 +242,7 @@
                         <button class="tool-btn" onclick="flipSelected()" title="Seçileni Aynala (F)">
                             <span class="material-icons">flip</span>
                         </button>
-                        <div class="rotation-input-group" id="rotationInputGroup" style="display:none;">
+                        <div class="rotation-input-group" id="rotationInputGroup" style="display:flex;">
                             <label style="font-size:11px;color:#888;margin-right:4px;">Açı:</label>
                             <input type="number" id="rotationAngleInput" class="resize-input" style="width:55px;padding:2px 4px;font-size:12px;" value="0" min="-360" max="360" step="1" onchange="setRotationAngle()">
                             <span style="font-size:11px;color:#888;">°</span>
@@ -264,7 +264,7 @@
                             <span class="material-icons">fit_screen</span>
                         </button>
                         <div class="toolbar-separator"></div>
-                        <span class="toolbar-info" id="canvasInfo">Alt Katman — 0 öğe</span>
+                        <span class="toolbar-info" id="canvasInfo">Üst Katman — 0 öğe</span>
                     </div>
                 </div>
 

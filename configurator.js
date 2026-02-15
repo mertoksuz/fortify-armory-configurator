@@ -207,7 +207,7 @@ let state = {
     currentStep: 1,
     caseType: null,
     caseColor: 'orange',
-    activeLayer: 'bottom',
+    activeLayer: 'top',
     options: { bags: false, wheels: false, pull: false },
     layers: { bottom: [], top: [] },
     selectedItemId: null,
@@ -818,6 +818,83 @@ function createCanvasItem(item) {
         visible: false, name: 'selectionRect'
     }));
 
+    // ===== ROTATION HANDLE (top-center) =====
+    if (!item.isShadow && !item.isVertical) {
+        const rotHandleSize = 12;
+        const rotHandleY = -cutoutPad - 22;
+        const rotHandle = new Konva.Group({
+            x: w / 2 - rotHandleSize / 2,
+            y: rotHandleY,
+            name: 'rotateHandle',
+            visible: false
+        });
+
+        // Stem line from item to handle
+        group.add(new Konva.Line({
+            points: [w / 2, -cutoutPad, w / 2, rotHandleY + rotHandleSize / 2],
+            stroke: '#4CAF50', strokeWidth: 1.5, dash: [3, 2],
+            visible: false, name: 'rotateStem'
+        }));
+
+        rotHandle.add(new Konva.Circle({
+            x: rotHandleSize / 2, y: rotHandleSize / 2,
+            radius: rotHandleSize / 2,
+            fill: '#4CAF50', stroke: '#FFF', strokeWidth: 1
+        }));
+        rotHandle.add(new Konva.Text({
+            x: 0, y: 1, width: rotHandleSize, height: rotHandleSize,
+            text: '↻', fontSize: 10, fill: '#FFF',
+            fontFamily: 'Inter', align: 'center'
+        }));
+
+        // Mouse-based free rotation
+        let isRotating = false;
+        let rotStartAngle = 0;
+        let itemStartRotation = 0;
+
+        rotHandle.on('mousedown touchstart', (e) => {
+            e.cancelBubble = true;
+            isRotating = true;
+            const groupPos = group.getAbsolutePosition();
+            const pointer = stage.getPointerPosition();
+            rotStartAngle = Math.atan2(pointer.y - groupPos.y, pointer.x - groupPos.x) * 180 / Math.PI;
+            itemStartRotation = item.rotation;
+            // Prevent group dragging while rotating
+            group.draggable(false);
+        });
+
+        stage.on('mousemove touchmove', () => {
+            if (!isRotating) return;
+            const groupPos = group.getAbsolutePosition();
+            const pointer = stage.getPointerPosition();
+            if (!pointer) return;
+            const currentAngle = Math.atan2(pointer.y - groupPos.y, pointer.x - groupPos.x) * 180 / Math.PI;
+            let newRotation = itemStartRotation + (currentAngle - rotStartAngle);
+            // Snap to 5° increments
+            newRotation = Math.round(newRotation / 5) * 5;
+            newRotation = ((newRotation % 360) + 360) % 360;
+            item.rotation = newRotation;
+            group.rotation(newRotation);
+            constrainToBounds(group, item);
+            mainLayer.draw();
+            updateRotationInput(item);
+        });
+
+        stage.on('mouseup touchend', () => {
+            if (!isRotating) return;
+            isRotating = false;
+            group.draggable(true);
+            item.x = group.x();
+            item.y = group.y();
+            syncShadowPosition(item);
+            checkCollisions(group, item);
+            updateSelectionInfo(item);
+            mainLayer.draw();
+        });
+
+        group.add(rotHandle);
+    }
+
     // ===== RESIZE HANDLE (bottom-right corner) =====
     if (item.resizable) {
         const handleSize = 14;
@@ -1191,10 +1268,15 @@ function rectsOverlap(a, b) {
 function selectItem(id) {
     state.selectedItemId = id;
     mainLayer.children.forEach(child => {
+        const isSelected = child.id() === 'item-' + id;
         const sel = child.findOne('.selectionRect');
         const resize = child.findOne('.resizeHandle');
-        if (sel) sel.visible(child.id() === 'item-' + id);
-        if (resize) resize.visible(child.id() === 'item-' + id);
+        const rotHandle = child.findOne('.rotateHandle');
+        const rotStem = child.findOne('.rotateStem');
+        if (sel) sel.visible(isSelected);
+        if (resize) resize.visible(isSelected);
+        if (rotHandle) rotHandle.visible(isSelected);
+        if (rotStem) rotStem.visible(isSelected);
     });
     mainLayer.draw();
     const item = state.layers[state.activeLayer].find(i => i.id === id);
@@ -1210,8 +1292,12 @@ function deselectAll() {
         mainLayer.children.forEach(child => {
             const sel = child.findOne('.selectionRect');
             const resize = child.findOne('.resizeHandle');
+            const rotHandle = child.findOne('.rotateHandle');
+            const rotStem = child.findOne('.rotateStem');
             if (sel) sel.visible(false);
             if (resize) resize.visible(false);
+            if (rotHandle) rotHandle.visible(false);
+            if (rotStem) rotStem.visible(false);
         });
         mainLayer.draw();
     }
@@ -1422,15 +1508,14 @@ function flipSelected() {
     }
 }
 
-// Show/hide rotation angle input based on selection
+// Update rotation angle input based on selection
 function updateRotationInput(item) {
-    const group = document.getElementById('rotationInputGroup');
     const input = document.getElementById('rotationAngleInput');
-    if (item && !item.isShadow && !item.isVertical) {
-        group.style.display = 'flex';
+    if (item && !item.isShadow) {
         input.value = item.rotation;
+        input.disabled = item.isVertical;
     } else {
-        group.style.display = 'none';
+        input.value = 0;
     }
 }
 
