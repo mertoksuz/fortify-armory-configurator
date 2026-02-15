@@ -139,7 +139,7 @@ const WEAPON_DB = {
 const ITEM_DEFS = {
     ammoBox: {
         name: 'Mermi Kutusu',
-        w: 130, h: 95, d: 70,
+        w: 120, h: 70, d: 50,
         color: '#5D8A3C', stroke: '#4A7030',
         icon: '🔲', resizable: true
     },
@@ -315,6 +315,21 @@ function setGunOrientation(orient) {
     selectedGunOrientation = orient;
     document.getElementById('orientH').classList.toggle('active', orient === 'horizontal');
     document.getElementById('orientV').classList.toggle('active', orient === 'vertical');
+
+    // Block optic selection for vertical guns
+    const opticCheckbox = document.getElementById('withOptic');
+    if (opticCheckbox) {
+        if (orient === 'vertical') {
+            opticCheckbox.checked = false;
+            opticCheckbox.disabled = true;
+            opticCheckbox.closest('.optic-toggle').style.opacity = '0.4';
+            opticCheckbox.closest('.optic-toggle').title = 'Dikey tabancalarda optik seçilemez';
+        } else {
+            opticCheckbox.disabled = false;
+            opticCheckbox.closest('.optic-toggle').style.opacity = '1';
+            opticCheckbox.closest('.optic-toggle').title = '';
+        }
+    }
 }
 
 function onModelChange() {
@@ -573,8 +588,8 @@ function addGunToCanvas() {
 
     const id = ++state.itemIdCounter;
 
-    // For vertical orientation, swap length<->height so the gun stands upright
-    const itemW = isVertical ? model.height : model.length;
+    // For vertical orientation, use 50mm width and model.length as height
+    const itemW = isVertical ? 50 : model.length;
     const itemH = isVertical ? model.length : model.height;
 
     const item = {
