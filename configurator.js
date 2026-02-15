@@ -231,6 +231,7 @@ function handleKeyDown(e) {
     if (state.currentStep !== 2) return;
     if (e.target.tagName === 'SELECT' || e.target.tagName === 'INPUT') return;
     if (e.key === 'r' || e.key === 'R') rotateSelected();
+    else if (e.key === 'f' || e.key === 'F') flipSelected();
     else if (e.key === 'Delete' || e.key === 'Backspace') deleteSelected();
 }
 
@@ -876,6 +877,13 @@ function createCanvasItem(item) {
     // EVENTS
     group.on('click tap', () => selectItem(item.id));
     group.on('dragstart', () => { selectItem(item.id); group.moveToTop(); });
+
+    // Apply saved flip state
+    if (item.flipped) {
+        group.scaleX(-1);
+        group.offsetX(w);
+    }
+
     group.on('dragmove', () => {
         const pos = group.position();
         const gridPx = GRID_SIZE * state.scale;
@@ -981,6 +989,13 @@ function renderGunVisual(group, w, h, item) {
     const drawW = isVert ? h : w;
     const drawH = isVert ? w : h;
 
+    // Clip group to item bounds so visuals don't overflow
+    const clipGroup = new Konva.Group({
+        clip: { x: 0, y: 0, width: w, height: h },
+        name: 'gunClipGroup'
+    });
+    group.add(clipGroup);
+
     // Create inner group for gun visual that can be rotated for vertical
     const gunGroup = new Konva.Group({ name: 'gunVisualGroup' });
     if (isVert) {
@@ -991,7 +1006,7 @@ function renderGunVisual(group, w, h, item) {
         gunGroup.x(0);
         gunGroup.y(0);
     }
-    group.add(gunGroup);
+    clipGroup.add(gunGroup);
 
     if (!imgUrl) {
         drawGunSilhouette(gunGroup, drawW, drawH, item);
@@ -1107,8 +1122,11 @@ function constrainToBounds(group, item) {
     const h = item.hMM * state.scale;
 
     const rot = group.rotation() % 360;
-    let effW = w, effH = h;
-    if (rot === 90 || rot === 270 || rot === -90 || rot === -270) { effW = h; effH = w; }
+    const radians = (rot * Math.PI) / 180;
+    const absC = Math.abs(Math.cos(radians));
+    const absS = Math.abs(Math.sin(radians));
+    const effW = w * absC + h * absS;
+    const effH = w * absS + h * absC;
 
     const nx = Math.max(boundsRect.x, Math.min(pos.x, boundsRect.x + boundsRect.w - effW));
     const ny = Math.max(boundsRect.y, Math.min(pos.y, boundsRect.y + boundsRect.h - effH));
@@ -1158,8 +1176,10 @@ function getGroupBounds(group, item) {
     const w = item.wMM * state.scale;
     const h = item.hMM * state.scale;
     const rot = group.rotation() % 360;
-    const isRotated = (rot === 90 || rot === 270 || rot === -90 || rot === -270);
-    return { x: pos.x, y: pos.y, w: isRotated ? h : w, h: isRotated ? w : h };
+    const radians = (rot * Math.PI) / 180;
+    const absC = Math.abs(Math.cos(radians));
+    const absS = Math.abs(Math.sin(radians));
+    return { x: pos.x, y: pos.y, w: w * absC + h * absS, h: w * absS + h * absC };
 }
 
 function rectsOverlap(a, b) {
@@ -1178,7 +1198,10 @@ function selectItem(id) {
     });
     mainLayer.draw();
     const item = state.layers[state.activeLayer].find(i => i.id === id);
-    if (item) updateSelectionInfo(item);
+    if (item) {
+        updateSelectionInfo(item);
+        updateRotationInput(item);
+    }
 }
 
 function deselectAll() {
@@ -1193,6 +1216,7 @@ function deselectAll() {
         mainLayer.draw();
     }
     document.getElementById('selectionInfo').innerHTML = '<p class="no-selection">Detayları görmek için tuval üzerinde bir öğeye tıklayın</p>';
+    document.getElementById('rotationInputGroup').style.display = 'none';
 }
 
 function updateSelectionInfo(item) {
@@ -1247,7 +1271,7 @@ function updateSelectionInfo(item) {
     }
 
     html += `<div class="info-row"><span class="info-label">Konum</span><span class="info-value">${Math.round((item.x - boundsRect.x) / state.scale)}, ${Math.round((item.y - boundsRect.y) / state.scale)} mm</span></div>
-        <div class="info-row"><span class="info-label">Dönüş</span><span class="info-value">${item.rotation}°</span></div>`;
+        <div class="info-row"><span class="info-label">Dönüş</span><span class="info-value">${item.rotation}°${item.flipped ? ' (aynalı)' : ''}</span></div>`;
 
     // Show vertical spanning note
     if (item.isVertical) {
@@ -1328,6 +1352,11 @@ function rotateSelected() {
     if (!item) return;
     // Don't allow rotating shadow items
     if (item.isShadow) return;
+    // Block rotation for vertical items
+    if (item.isVertical) {
+        showToast('⚠️ Dikey öğeler döndürülemez', 'error');
+        return;
+    }
     item.rotation = (item.rotation + 90) % 360;
     const group = mainLayer.findOne('#item-' + item.id);
     if (group) {
@@ -1339,7 +1368,69 @@ function rotateSelected() {
         checkCollisions(group, item);
         mainLayer.draw();
         updateSelectionInfo(item);
+        updateRotationInput(item);
         showToast(`${item.name} — ${item.rotation}° döndürüldü`);
+    }
+}
+
+// Set rotation to any angle from input
+function setRotationAngle() {
+    if (!state.selectedItemId) return;
+    const item = state.layers[state.activeLayer].find(i => i.id === state.selectedItemId);
+    if (!item) return;
+    if (item.isShadow || item.isVertical) return;
+    const angle = parseInt(document.getElementById('rotationAngleInput').value) || 0;
+    item.rotation = ((angle % 360) + 360) % 360;
+    const group = mainLayer.findOne('#item-' + item.id);
+    if (group) {
+        group.rotation(item.rotation);
+        constrainToBounds(group, item);
+        item.x = group.x();
+        item.y = group.y();
+        syncShadowPosition(item);
+        checkCollisions(group, item);
+        mainLayer.draw();
+        updateSelectionInfo(item);
+    }
+}
+
+// Flip (mirror) selected item horizontally
+function flipSelected() {
+    if (!state.selectedItemId) return;
+    const item = state.layers[state.activeLayer].find(i => i.id === state.selectedItemId);
+    if (!item) return;
+    if (item.isShadow) return;
+    // Block flip for vertical items
+    if (item.isVertical) {
+        showToast('⚠️ Dikey öğeler aynalanamaz', 'error');
+        return;
+    }
+    // Toggle flip state
+    item.flipped = !item.flipped;
+    const group = mainLayer.findOne('#item-' + item.id);
+    if (group) {
+        const w = item.wMM * state.scale;
+        if (item.flipped) {
+            group.scaleX(-1);
+            group.offsetX(w);
+        } else {
+            group.scaleX(1);
+            group.offsetX(0);
+        }
+        mainLayer.draw();
+        showToast(`${item.name} — ${item.flipped ? 'aynalandı' : 'normal'}`);
+    }
+}
+
+// Show/hide rotation angle input based on selection
+function updateRotationInput(item) {
+    const group = document.getElementById('rotationInputGroup');
+    const input = document.getElementById('rotationAngleInput');
+    if (item && !item.isShadow && !item.isVertical) {
+        group.style.display = 'flex';
+        input.value = item.rotation;
+    } else {
+        group.style.display = 'none';
     }
 }
 

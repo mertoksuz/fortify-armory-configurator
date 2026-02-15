@@ -588,6 +588,21 @@ body {
 
 .tool-btn .material-icons { font-size: 18px; }
 
+.rotation-input-group {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    padding: 0 4px;
+}
+
+.rotation-input-group input {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text);
+    text-align: center;
+}
+
 .toolbar-separator {
     width: 1px;
     height: 24px;

@@ -204,11 +204,13 @@
                             • Konumlandırmak için <b>sürükleyin</b><br>
                             • Seçmek için <b>tıklayın</b><br>
                             • 90° döndürmek için <b>R</b> tuşu<br>
+                            • Aynalmak için <b>F</b> tuşu<br>
                             • Silmek için <b>Delete/Backspace</b><br>
                             • Boyutlandırmak için <b>köşeyi sürükleyin</b><br>
-                            • Seçim panelinde <b>boyut girin</b><br>
+                            • Araç çubuğunda <b>açı girin</b><br>
                             • Öğeler ızgaraya yapışır<br>
-                            • Kırmızı alan = kulp bölgesi (engelli)
+                            • Kırmızı alan = kulp bölgesi (engelli)<br>
+                            • Dikey öğeler döndürülemez/aynalanamaz
                         </p>
                     </div>
                 </aside>
@@ -234,9 +236,17 @@
 
                     <!-- Canvas Toolbar -->
                     <div class="canvas-toolbar">
-                        <button class="tool-btn" onclick="rotateSelected()" title="Seçileni Döndür (R)">
+                        <button class="tool-btn" onclick="rotateSelected()" title="Seçileni 90° Döndür (R)">
                             <span class="material-icons">rotate_right</span>
                         </button>
+                        <button class="tool-btn" onclick="flipSelected()" title="Seçileni Aynala (F)">
+                            <span class="material-icons">flip</span>
+                        </button>
+                        <div class="rotation-input-group" id="rotationInputGroup" style="display:none;">
+                            <label style="font-size:11px;color:#888;margin-right:4px;">Açı:</label>
+                            <input type="number" id="rotationAngleInput" class="resize-input" style="width:55px;padding:2px 4px;font-size:12px;" value="0" min="-360" max="360" step="1" onchange="setRotationAngle()">
+                            <span style="font-size:11px;color:#888;">°</span>
+                        </div>
                         <button class="tool-btn" onclick="deleteSelected()" title="Seçileni Sil (Del)">
                             <span class="material-icons">delete</span>
                         </button>
