@@ -220,6 +220,7 @@ let mainLayer = null;
 let gridLayer = null;
 let boundsRect = null;
 let blockedRect = null;  // blocked zone bounds in canvas px
+let activeRotation = null; // centralized rotation state
 
 const GRID_SIZE = 10;       // mm
 const SNAP_THRESHOLD = 5;
@@ -482,12 +483,46 @@ function initCanvas() {
         if (e.target === stage || e.target.getParent() === gridLayer) deselectAll();
     });
 
+    // Centralized rotation handling – avoids stacking per-item stage listeners
+    stage.on('mousemove touchmove', () => {
+        if (!activeRotation) return;
+        const pointer = stage.getPointerPosition();
+        if (!pointer) return;
+        const { item, group, startAngle, startRotation } = activeRotation;
+        const groupPos = group.getAbsolutePosition();
+        const currentAngle = Math.atan2(pointer.y - groupPos.y, pointer.x - groupPos.x) * 180 / Math.PI;
+        const delta = currentAngle - startAngle;
+        let newRot = startRotation + delta;
+        // Snap to 5° increments
+        newRot = Math.round(newRot / 5) * 5;
+        item.rotation = ((newRot % 360) + 360) % 360;
+        group.rotation(item.rotation);
+        constrainToBounds(group, item);
+        updateRotationInput(item);
+        mainLayer.draw();
+    });
+
+    stage.on('mouseup touchend', () => {
+        if (!activeRotation) return;
+        const { item, group } = activeRotation;
+        group.draggable(true);
+        const pos = group.position();
+        item.x = pos.x;
+        item.y = pos.y;
+        syncShadowPosition(item);
+        checkCollisions(group, item);
+        updateSelectionInfo(item);
+        mainLayer.draw();
+        activeRotation = null;
+    });
+
     updateCanvasInfo();
 }
 
 // ===== RENDER LAYER ITEMS =====
 function renderLayerItems() {
     if (!mainLayer) return;
+    activeRotation = null; // clear any in-progress rotation
     mainLayer.destroyChildren();
 
     // Render actual items for the active layer
@@ -847,49 +882,18 @@ function createCanvasItem(item) {
             fontFamily: 'Inter', align: 'center'
         }));
 
-        // Mouse-based free rotation
-        let isRotating = false;
-        let rotStartAngle = 0;
-        let itemStartRotation = 0;
-
+        // Mouse-based free rotation using centralized handler
         rotHandle.on('mousedown touchstart', (e) => {
             e.cancelBubble = true;
-            isRotating = true;
             const groupPos = group.getAbsolutePosition();
             const pointer = stage.getPointerPosition();
-            rotStartAngle = Math.atan2(pointer.y - groupPos.y, pointer.x - groupPos.x) * 180 / Math.PI;
-            itemStartRotation = item.rotation;
-            // Prevent group dragging while rotating
+            activeRotation = {
+                item: item,
+                group: group,
+                startAngle: Math.atan2(pointer.y - groupPos.y, pointer.x - groupPos.x) * 180 / Math.PI,
+                startRotation: item.rotation
+            };
             group.draggable(false);
-        });
-
-        stage.on('mousemove touchmove', () => {
-            if (!isRotating) return;
-            const groupPos = group.getAbsolutePosition();
-            const pointer = stage.getPointerPosition();
-            if (!pointer) return;
-            const currentAngle = Math.atan2(pointer.y - groupPos.y, pointer.x - groupPos.x) * 180 / Math.PI;
-            let newRotation = itemStartRotation + (currentAngle - rotStartAngle);
-            // Snap to 5° increments
-            newRotation = Math.round(newRotation / 5) * 5;
-            newRotation = ((newRotation % 360) + 360) % 360;
-            item.rotation = newRotation;
-            group.rotation(newRotation);
-            constrainToBounds(group, item);
-            mainLayer.draw();
-            updateRotationInput(item);
-        });
-
-        stage.on('mouseup touchend', () => {
-            if (!isRotating) return;
-            isRotating = false;
-            group.draggable(true);
-            item.x = group.x();
-            item.y = group.y();
-            syncShadowPosition(item);
-            checkCollisions(group, item);
-            updateSelectionInfo(item);
-            mainLayer.draw();
         });
 
         group.add(rotHandle);
