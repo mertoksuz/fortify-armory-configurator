@@ -1,0 +1,342 @@
+{% comment %}
+  ============================================================
+  FORTIFY ARMORY — Custom Gun Case Configurator
+  Shopify Section Template
+  ============================================================
+  HOW TO USE:
+  1. Upload configurator.js + configurator-styles.css to Theme > Assets
+  2. Copy this file to Theme > Sections
+  3. Add section to a page via Customize or {% section 'gun-case-configurator' %}
+  4. Set your variant IDs in the section settings
+  ============================================================
+{% endcomment %}
+
+{{ 'configurator-styles.css' | asset_url | stylesheet_tag }}
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+<div class="fa-configurator" id="fa-configurator">
+  <!-- ===== HEADER ===== -->
+  <div class="fa-header">
+    <div class="fa-header-content">
+      <h1 class="fa-title">
+        <span class="material-icons fa-title-icon">dashboard_customize</span>
+        {{ section.settings.title | default: 'CUSTOM GUN CASE CONFIGURATOR' }}
+      </h1>
+      <p class="fa-subtitle">{{ section.settings.subtitle | default: 'Design your perfect case — drag, drop, and customize every detail' }}</p>
+    </div>
+  </div>
+
+  <!-- ===== STEPPER ===== -->
+  <div class="fa-stepper">
+    <div class="fa-step active" data-step="1">
+      <div class="fa-step-number">1</div>
+      <div class="fa-step-label">Select Case</div>
+    </div>
+    <div class="fa-step-connector"></div>
+    <div class="fa-step" data-step="2">
+      <div class="fa-step-number">2</div>
+      <div class="fa-step-label">Configure Layout</div>
+    </div>
+    <div class="fa-step-connector"></div>
+    <div class="fa-step" data-step="3">
+      <div class="fa-step-number">3</div>
+      <div class="fa-step-label">Review & Add to Cart</div>
+    </div>
+  </div>
+
+  <div class="fa-main">
+
+    <!-- ==================== STEP 1: SELECT CASE ==================== -->
+    <div class="fa-step-content active" id="fa-step1">
+      <div class="fa-section-title">Choose Your Case</div>
+      <div class="fa-case-grid">
+        <!-- BIG CASE -->
+        <div class="fa-case-card" data-case="big" onclick="FA.selectCase('big')">
+          <div class="fa-case-icon">
+            <span class="material-icons">work</span>
+          </div>
+          <div class="fa-case-info">
+            <h3>Fortify Pro Case</h3>
+            <p class="fa-case-dims">Interior: 900 × 400 mm</p>
+            <div class="fa-case-features">
+              <span class="fa-feature-tag"><span class="material-icons">layers</span> 2 Foam Layers</span>
+              <span class="fa-feature-tag"><span class="material-icons">shopping_bag</span> Optional Bags</span>
+              <span class="fa-feature-tag"><span class="material-icons">airline_seat_recline_extra</span> Wheels Available</span>
+              <span class="fa-feature-tag"><span class="material-icons">drag_handle</span> Pull Handle</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- SMALL CASE -->
+        <div class="fa-case-card" data-case="small" onclick="FA.selectCase('small')">
+          <div class="fa-case-icon">
+            <span class="material-icons">cases</span>
+          </div>
+          <div class="fa-case-info">
+            <h3>Fortify Compact Case</h3>
+            <p class="fa-case-dims">Interior: 600 × 350 mm</p>
+            <div class="fa-case-features">
+              <span class="fa-feature-tag"><span class="material-icons">layers</span> 2 Foam Layers</span>
+              <span class="fa-feature-tag"><span class="material-icons">shopping_bag</span> Optional Bags</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- COLOR SELECTION -->
+      <div class="fa-section-title" style="margin-top:32px;">Select Color</div>
+      <div class="fa-color-selector">
+        <div class="fa-color-option selected" data-color="orange" onclick="FA.selectColor('orange')">
+          <div class="fa-color-dot selected" data-color="orange" style="background:#E87A1E;"></div>
+          <span>Orange</span>
+        </div>
+        <div class="fa-color-option" data-color="black" onclick="FA.selectColor('black')">
+          <div class="fa-color-dot" data-color="black" style="background:#333;"></div>
+          <span>Black</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== STEP 2: CONFIGURE ==================== -->
+    <div class="fa-step-content" id="fa-step2">
+      <div class="fa-configure-layout">
+        <!-- LEFT PANEL -->
+        <div class="fa-panel fa-panel-left">
+          <div class="fa-panel-section">
+            <div class="fa-panel-title">
+              <span class="material-icons">gps_fixed</span> Add Weapon
+            </div>
+            <div class="fa-form-group">
+              <label>Brand</label>
+              <select id="faWeaponBrand" onchange="FA.onBrandChange()">
+                <option value="">Select Brand...</option>
+                <option value="canik">Canik</option>
+                <option value="sarsilmaz">Sarsılmaz</option>
+                <option value="cz">CZ</option>
+                <option value="wilson">Wilson Combat</option>
+              </select>
+            </div>
+            <div class="fa-form-group">
+              <label>Model</label>
+              <select id="faWeaponModel" onchange="FA.onModelChange()" disabled>
+                <option value="">Select Model...</option>
+              </select>
+            </div>
+            <div id="faWeaponInfo" class="fa-weapon-info hidden">
+              <div class="fa-info-row"><span class="fa-info-label">Length</span><span class="fa-info-value" id="faWLen">—</span></div>
+              <div class="fa-info-row"><span class="fa-info-label">Height</span><span class="fa-info-value" id="faWHei">—</span></div>
+              <div class="fa-info-row"><span class="fa-info-label">Width</span><span class="fa-info-value" id="faWWid">—</span></div>
+            </div>
+            <button class="fa-btn fa-btn-primary" id="faAddGunBtn" onclick="FA.addGunToCanvas()" disabled>
+              <span class="material-icons">add</span> Add to Canvas
+            </button>
+          </div>
+
+          <div class="fa-panel-section">
+            <div class="fa-panel-title">
+              <span class="material-icons">inventory_2</span> Accessories
+            </div>
+            <div class="fa-item-grid">
+              <button class="fa-item-btn" onclick="FA.addItemToCanvas('ammoBox')"><span class="material-icons">inventory</span> Ammo Box</button>
+              <button class="fa-item-btn" onclick="FA.addItemToCanvas('magazine')"><span class="material-icons">view_column</span> Magazine</button>
+              <button class="fa-item-btn" onclick="FA.addItemToCanvas('spray')"><span class="material-icons">spray</span> Spray Can</button>
+              <button class="fa-item-btn" onclick="FA.addItemToCanvas('cleaningKit')"><span class="material-icons">handyman</span> Cleaning Kit</button>
+              <button class="fa-item-btn" onclick="FA.addItemToCanvas('earProtection')"><span class="material-icons">headphones</span> Ear Protection</button>
+              <button class="fa-item-btn" onclick="FA.addItemToCanvas('glasses')"><span class="material-icons">visibility</span> Safety Glasses</button>
+            </div>
+          </div>
+
+          <div class="fa-panel-section">
+            <div class="fa-panel-title">
+              <span class="material-icons">list</span> Layer Items
+            </div>
+            <div id="faLayerSummary" class="fa-layer-summary">
+              <p class="fa-empty-summary">No items placed yet</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- CENTER: CANVAS -->
+        <div class="fa-canvas-area">
+          <div class="fa-canvas-toolbar">
+            <div class="fa-layer-tabs">
+              <button class="fa-layer-tab active" data-layer="bottom" onclick="FA.switchLayer('bottom')">
+                <span class="material-icons">layers</span> Bottom Layer
+              </button>
+              <button class="fa-layer-tab" data-layer="top" onclick="FA.switchLayer('top')">
+                <span class="material-icons">layers</span> Top Layer
+              </button>
+            </div>
+            <div class="fa-toolbar-actions">
+              <button class="fa-tool-btn" onclick="FA.rotateSelected()" title="Rotate (R)"><span class="material-icons">rotate_right</span></button>
+              <button class="fa-tool-btn" onclick="FA.deleteSelected()" title="Delete (Del)"><span class="material-icons">delete</span></button>
+              <button class="fa-tool-btn" onclick="FA.clearCurrentLayer()" title="Clear Layer"><span class="material-icons">delete_sweep</span></button>
+              <div class="fa-toolbar-sep"></div>
+              <button class="fa-tool-btn" onclick="FA.zoomIn()" title="Zoom In"><span class="material-icons">zoom_in</span></button>
+              <button class="fa-tool-btn" onclick="FA.zoomOut()" title="Zoom Out"><span class="material-icons">zoom_out</span></button>
+              <button class="fa-tool-btn" onclick="FA.resetZoom()" title="Reset"><span class="material-icons">fit_screen</span></button>
+            </div>
+          </div>
+          <div class="fa-canvas-wrapper">
+            <div id="configurator-canvas" class="fa-canvas"></div>
+          </div>
+          <div class="fa-canvas-status">
+            <span id="faCanvasInfo">Bottom Layer — 0 items</span>
+            <span class="fa-help-text">Drag items to position • Press R to rotate • Del to remove</span>
+          </div>
+        </div>
+
+        <!-- RIGHT PANEL -->
+        <div class="fa-panel fa-panel-right">
+          <div class="fa-panel-section">
+            <div class="fa-panel-title">
+              <span class="material-icons">info</span> Selected Item
+            </div>
+            <div id="faSelectionInfo">
+              <p class="fa-no-selection">Click an item on the canvas to see details</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== STEP 3: REVIEW ==================== -->
+    <div class="fa-step-content" id="fa-step3">
+      <div class="fa-review-layout">
+        <div class="fa-review-section">
+          <div class="fa-section-title">Configuration Summary</div>
+          <div id="faReviewSummary" class="fa-review-details"></div>
+        </div>
+
+        <div class="fa-review-section">
+          <div class="fa-section-title">Layout Preview</div>
+          <div class="fa-preview-panels">
+            <div class="fa-preview-panel">
+              <h4>Bottom Layer</h4>
+              <div id="fa-preview-bottom" class="fa-mini-preview"></div>
+            </div>
+            <div class="fa-preview-panel">
+              <h4>Top Layer</h4>
+              <div id="fa-preview-top" class="fa-mini-preview"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="fa-review-section">
+          <div class="fa-section-title">Options & Add-ons</div>
+          <div class="fa-options-grid">
+            <label class="fa-option-card">
+              <input type="checkbox" id="faOptBags" onchange="FA.updateOptions()">
+              <span class="fa-option-content">
+                <span class="material-icons">shopping_bag</span>
+                <span>Top Cover Bags (×2)</span>
+              </span>
+            </label>
+            <label class="fa-option-card" id="fa-opt-wheels" style="display:none;">
+              <input type="checkbox" id="faOptWheels" onchange="FA.updateOptions()">
+              <span class="fa-option-content">
+                <span class="material-icons">airline_seat_recline_extra</span>
+                <span>Wheels</span>
+              </span>
+            </label>
+            <label class="fa-option-card" id="fa-opt-pull" style="display:none;">
+              <input type="checkbox" id="faOptPull" onchange="FA.updateOptions()">
+              <span class="fa-option-content">
+                <span class="material-icons">drag_handle</span>
+                <span>Pull Handle</span>
+              </span>
+            </label>
+          </div>
+        </div>
+
+        <button class="fa-btn fa-btn-cart" onclick="FA.addToCart()">
+          <span class="material-icons">shopping_cart</span>
+          ADD CUSTOM CASE TO CART
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- NAVIGATION BUTTONS -->
+  <div class="fa-nav-buttons">
+    <button id="faPrevBtn" class="fa-btn fa-btn-secondary" onclick="FA.prevStep()" style="display:none;">
+      <span class="material-icons">arrow_back</span> Back
+    </button>
+    <button id="faNextBtn" class="fa-btn fa-btn-primary" onclick="FA.nextStep()">
+      Next <span class="material-icons">arrow_forward</span>
+    </button>
+  </div>
+</div>
+
+<!-- Konva.js -->
+<script src="https://unpkg.com/konva@9/konva.min.js" defer></script>
+
+<!-- VARIANT MAP — connects configurator to your Shopify products -->
+<script>
+  window.FA_VARIANT_MAP = {
+    'big-orange':   {{ section.settings.variant_big_orange | json }},
+    'big-black':    {{ section.settings.variant_big_black | json }},
+    'small-orange': {{ section.settings.variant_small_orange | json }},
+    'small-black':  {{ section.settings.variant_small_black | json }}
+  };
+</script>
+
+<!-- Configurator engine -->
+{{ 'configurator.js' | asset_url | script_tag }}
+
+{% schema %}
+{
+  "name": "Gun Case Configurator",
+  "tag": "section",
+  "class": "fa-configurator-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Section Title",
+      "default": "CUSTOM GUN CASE CONFIGURATOR"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Section Subtitle",
+      "default": "Design your perfect case — drag, drop, and customize every detail"
+    },
+    {
+      "type": "header",
+      "content": "Product Variant IDs"
+    },
+    {
+      "type": "text",
+      "id": "variant_big_orange",
+      "label": "Big Case — Orange (Variant ID)",
+      "info": "Find this in Products → Edit variant → look at the URL"
+    },
+    {
+      "type": "text",
+      "id": "variant_big_black",
+      "label": "Big Case — Black (Variant ID)"
+    },
+    {
+      "type": "text",
+      "id": "variant_small_orange",
+      "label": "Small Case — Orange (Variant ID)"
+    },
+    {
+      "type": "text",
+      "id": "variant_small_black",
+      "label": "Small Case — Black (Variant ID)"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Gun Case Configurator",
+      "category": "Custom"
+    }
+  ]
+}
+{% endschema %}

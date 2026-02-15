@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fortify Armory - Özel Silah Çantası Yapılandırıcı</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://unpkg.com/konva@9/konva.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+    <!-- HEADER -->
+    <header class="header">
+        <div class="header-inner">
+            <div class="logo">
+                <span class="logo-icon">🛡️</span>
+                <span class="logo-text">FORTIFY<span class="logo-accent">ARMORY</span></span>
+            </div>
+            <div class="header-title">Özel Çanta Yapılandırıcı</div>
+        </div>
+    </header>
+
+    <main class="main-container">
+        <!-- STEP INDICATOR -->
+        <div class="steps-bar">
+            <div class="step active" data-step="1">
+                <div class="step-number">1</div>
+                <div class="step-label">Çanta Seçin</div>
+            </div>
+            <div class="step-connector"></div>
+            <div class="step" data-step="2">
+                <div class="step-number">2</div>
+                <div class="step-label">Yerleşimi Düzenle</div>
+            </div>
+            <div class="step-connector"></div>
+            <div class="step" data-step="3">
+                <div class="step-number">3</div>
+                <div class="step-label">Seçenekler ve İnceleme</div>
+            </div>
+        </div>
+
+        <!-- STEP 1: SELECT CASE -->
+        <section id="step1" class="step-content active">
+            <h2 class="section-title">Çantanızı Seçin</h2>
+            <p class="section-subtitle">İhtiyacınıza uygun çanta boyutunu seçin</p>
+
+            <div class="case-selector">
+                <!-- BIG BOX -->
+                <div class="case-card" data-case="big" onclick="selectCase('big')">
+                    <div class="case-badge">Popüler</div>
+                    <div class="case-icon">
+                        <svg viewBox="0 0 200 120" class="case-svg">
+                            <rect x="10" y="10" width="180" height="100" rx="8" fill="none" stroke="currentColor" stroke-width="3"/>
+                            <line x1="10" y1="60" x2="190" y2="60" stroke="currentColor" stroke-width="1.5" stroke-dasharray="5,5"/>
+                            <circle cx="30" cy="105" r="8" fill="none" stroke="currentColor" stroke-width="2"/>
+                            <circle cx="170" cy="105" r="8" fill="none" stroke="currentColor" stroke-width="2"/>
+                            <rect x="90" y="2" width="20" height="10" rx="3" fill="currentColor" opacity="0.5"/>
+                        </svg>
+                    </div>
+                    <h3 class="case-name">Fortify Pro Çanta</h3>
+                    <p class="case-size">Büyük — 463 × 338 mm (46.3 × 33.8 cm)</p>
+                    <ul class="case-features">
+                        <li><span class="material-icons">check_circle</span> 2 özelleştirilebilir sünger katman</li>
+                        <li><span class="material-icons">check_circle</span> Opsiyonel üst kapak çantaları (×2)</li>
+                        <li><span class="material-icons">check_circle</span> Opsiyonel tekerlekler ve çekme kolu</li>
+                        <li><span class="material-icons">check_circle</span> Kulp alanı ayrılmış (100×50 mm)</li>
+                    </ul>
+                    <div class="case-colors">
+                        <span class="color-dot orange selected" data-color="orange" title="Turuncu"></span>
+                        <span class="color-dot black" data-color="black" title="Siyah"></span>
+                    </div>
+                </div>
+
+                <!-- SMALL BOX -->
+                <div class="case-card" data-case="small" onclick="selectCase('small')">
+                    <div class="case-icon">
+                        <svg viewBox="0 0 160 120" class="case-svg">
+                            <rect x="10" y="20" width="140" height="80" rx="8" fill="none" stroke="currentColor" stroke-width="3"/>
+                            <line x1="10" y1="60" x2="150" y2="60" stroke="currentColor" stroke-width="1.5" stroke-dasharray="5,5"/>
+                            <rect x="65" y="12" width="20" height="10" rx="3" fill="currentColor" opacity="0.5"/>
+                        </svg>
+                    </div>
+                    <h3 class="case-name">Fortify Kompakt Çanta</h3>
+                    <p class="case-size">Kompakt — 403 × 330 mm (40.3 × 33.0 cm)</p>
+                    <ul class="case-features">
+                        <li><span class="material-icons">check_circle</span> 2 özelleştirilebilir sünger katman</li>
+                        <li><span class="material-icons">check_circle</span> Opsiyonel üst kapak çantaları (×2)</li>
+                        <li><span class="material-icons">check_circle</span> Kulp alanı ayrılmış (100×50 mm)</li>
+                    </ul>
+                    <div class="case-colors">
+                        <span class="color-dot orange selected" data-color="orange" title="Turuncu"></span>
+                        <span class="color-dot black" data-color="black" title="Siyah"></span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- STEP 2: CONFIGURATOR -->
+        <section id="step2" class="step-content">
+            <div class="configurator-layout">
+                <!-- LEFT: ITEM PALETTE -->
+                <aside class="palette-panel">
+                    <h3 class="panel-title">
+                        <span class="material-icons">dashboard_customize</span>
+                        Öğeler
+                    </h3>
+
+                    <!-- Weapon Brand/Model Selector -->
+                    <div class="palette-section">
+                        <h4 class="palette-section-title">
+                            <span class="material-icons">gps_fixed</span>
+                            Tabanca
+                        </h4>
+                        <div class="weapon-selector">
+                            <label class="field-label">Marka</label>
+                            <select id="weaponBrand" class="select-field" onchange="onBrandChange()">
+                                <option value="">Marka Seçin...</option>
+                                <option value="canik">Canik</option>
+                                <option value="sarsilmaz">Sarsılmaz</option>
+                                <option value="cz">CZ (Česká Zbrojovka)</option>
+                                <option value="wilson">Wilson Combat</option>
+                            </select>
+                            <label class="field-label" style="margin-top:8px;">Model</label>
+                            <select id="weaponModel" class="select-field" onchange="onModelChange()" disabled>
+                                <option value="">Model Seçin...</option>
+                            </select>
+                        </div>
+                        <div id="weaponInfo" class="weapon-info hidden">
+                            <div class="weapon-dims">
+                                <span class="dim-label">U:</span><span id="wLen" class="dim-val"></span>
+                                <span class="dim-label">Y:</span><span id="wHei" class="dim-val"></span>
+                                <span class="dim-label">G:</span><span id="wWid" class="dim-val"></span>
+                            </div>
+                            <label class="optic-toggle" style="display:flex;align-items:center;gap:8px;margin-top:8px;cursor:pointer;font-size:13px;color:#ccc;">
+                                <input type="checkbox" id="withOptic" style="accent-color:#E87A1E;width:16px;height:16px;">
+                                <span class="material-icons" style="font-size:16px;color:#5C6BC0;">visibility</span>
+                                Optik ile (50×50mm red dot kesimi ekler)
+                            </label>
+                        </div>
+                        <div id="gunOrientation" class="gun-orientation hidden" style="display:none;">
+                            <label class="field-label" style="margin-top:6px;">Yön</label>
+                            <div style="display:flex;gap:6px;margin-top:4px;">
+                                <button type="button" class="orient-btn active" id="orientH" onclick="setGunOrientation('horizontal')" title="Yatay (namlu sağa)">
+                                    <span class="material-icons" style="font-size:18px;">panorama_wide_angle</span> Yatay
+                                </button>
+                                <button type="button" class="orient-btn" id="orientV" onclick="setGunOrientation('vertical')" title="Dikey (namlu yukarı, kabza aşağı)">
+                                    <span class="material-icons" style="font-size:18px;transform:rotate(90deg);">panorama_wide_angle</span> Dikey
+                                </button>
+                            </div>
+                        </div>
+                        <button class="palette-item-btn" id="addGunBtn" disabled onclick="addGunToCanvas()">
+                            <span class="material-icons">add_circle</span>
+                            Tabanca Ekle
+                        </button>
+                    </div>
+
+                    <div class="palette-section">
+                        <h4 class="palette-section-title">
+                            <span class="material-icons">inventory_2</span>
+                            Aksesuarlar
+                        </h4>
+                        <button class="palette-item-btn" onclick="addItemToCanvas('ammoBox')">
+                            <span class="item-preview ammo-preview"></span>
+                            Mermi Kutusu <span class="item-dim">130×95 mm ↔</span>
+                        </button>
+                        <button class="palette-item-btn" onclick="addItemToCanvas('magazine')">
+                            <span class="item-preview mag-preview"></span>
+                            Şarjör <span class="item-dim">40×120 mm ↔</span>
+                        </button>
+                        <div class="mag-orientation" style="display:flex;gap:4px;margin:-6px 0 6px 0;padding:0 4px;">
+                            <button type="button" class="orient-btn small active" id="magOrientH" onclick="setMagOrientation('horizontal')" title="Yatay şarjör">
+                                <span class="material-icons" style="font-size:14px;">panorama_wide_angle</span> Yatay
+                            </button>
+                            <button type="button" class="orient-btn small" id="magOrientV" onclick="setMagOrientation('vertical')" title="Dikey şarjör (her iki katmanı kaplar, sadece üst katman)">
+                                <span class="material-icons" style="font-size:14px;transform:rotate(90deg);">panorama_wide_angle</span> Dikey ↕
+                            </button>
+                        </div>
+                        <button class="palette-item-btn" onclick="addItemToCanvas('spray')">
+                            <span class="item-preview spray-preview"></span>
+                            Sprey <span class="item-dim">Ø52×192 mm ↔</span>
+                        </button>
+                        <button class="palette-item-btn" onclick="addItemToCanvas('cleaningKit')">
+                            <span class="item-preview kit-preview"></span>
+                            Temizlik Kiti <span class="item-dim">180×80 mm ↔</span>
+                        </button>
+                        <button class="palette-item-btn" onclick="addItemToCanvas('earProtection')">
+                            <span class="item-preview ear-preview"></span>
+                            Kulaklık <span class="item-dim">160×100 mm ↔</span>
+                        </button>
+                        <button class="palette-item-btn" onclick="addItemToCanvas('glasses')">
+                            <span class="item-preview glass-preview"></span>
+                            Koruyucu Gözlük <span class="item-dim">170×50 mm ↔</span>
+                        </button>
+                        <p class="gun-image-note">↔ = Boyutlandırılabilir — boyutları ayarlamak için öğeye tıklayın</p>
+                    </div>
+
+                    <div class="palette-section">
+                        <h4 class="palette-section-title">
+                            <span class="material-icons">help_outline</span>
+                            Kontroller
+                        </h4>
+                        <p class="palette-help">
+                            • Konumlandırmak için <b>sürükleyin</b><br>
+                            • Seçmek için <b>tıklayın</b><br>
+                            • 90° döndürmek için <b>R</b> tuşu<br>
+                            • Silmek için <b>Delete/Backspace</b><br>
+                            • Boyutlandırmak için <b>köşeyi sürükleyin</b><br>
+                            • Seçim panelinde <b>boyut girin</b><br>
+                            • Öğeler ızgaraya yapışır<br>
+                            • Kırmızı alan = kulp bölgesi (engelli)
+                        </p>
+                    </div>
+                </aside>
+
+                <!-- CENTER: CANVAS -->
+                <div class="canvas-area">
+                    <!-- Layer Tabs -->
+                    <div class="layer-tabs">
+                        <button class="layer-tab active" data-layer="bottom" onclick="switchLayer('bottom')">
+                            <span class="material-icons">layers</span>
+                            Alt Katman
+                        </button>
+                        <button class="layer-tab" data-layer="top" onclick="switchLayer('top')">
+                            <span class="material-icons">layers</span>
+                            Üst Katman
+                        </button>
+                    </div>
+
+                    <!-- Canvas Container -->
+                    <div class="canvas-wrapper">
+                        <div id="configurator-canvas"></div>
+                    </div>
+
+                    <!-- Canvas Toolbar -->
+                    <div class="canvas-toolbar">
+                        <button class="tool-btn" onclick="rotateSelected()" title="Seçileni Döndür (R)">
+                            <span class="material-icons">rotate_right</span>
+                        </button>
+                        <button class="tool-btn" onclick="deleteSelected()" title="Seçileni Sil (Del)">
+                            <span class="material-icons">delete</span>
+                        </button>
+                        <button class="tool-btn" onclick="clearCurrentLayer()" title="Katmanı Temizle">
+                            <span class="material-icons">clear_all</span>
+                        </button>
+                        <div class="toolbar-separator"></div>
+                        <button class="tool-btn" onclick="zoomIn()" title="Yakınlaştır">
+                            <span class="material-icons">zoom_in</span>
+                        </button>
+                        <button class="tool-btn" onclick="zoomOut()" title="Uzaklaştır">
+                            <span class="material-icons">zoom_out</span>
+                        </button>
+                        <button class="tool-btn" onclick="resetZoom()" title="Görünümü Sıfırla">
+                            <span class="material-icons">fit_screen</span>
+                        </button>
+                        <div class="toolbar-separator"></div>
+                        <span class="toolbar-info" id="canvasInfo">Alt Katman — 0 öğe</span>
+                    </div>
+                </div>
+
+                <!-- RIGHT: SELECTED ITEM INFO -->
+                <aside class="info-panel">
+                    <h3 class="panel-title">
+                        <span class="material-icons">info</span>
+                        Seçim
+                    </h3>
+                    <div id="selectionInfo" class="selection-info">
+                        <p class="no-selection">Detayları görmek için tuval üzerinde bir öğeye tıklayın</p>
+                    </div>
+
+                    <h3 class="panel-title" style="margin-top:24px;">
+                        <span class="material-icons">summarize</span>
+                        Katman Özeti
+                    </h3>
+                    <div id="layerSummary" class="layer-summary">
+                        <p class="empty-summary">Henüz öğe yerleştirilmedi</p>
+                    </div>
+                </aside>
+            </div>
+        </section>
+
+        <!-- STEP 3: OPTIONS & REVIEW -->
+        <section id="step3" class="step-content">
+            <h2 class="section-title">Seçenekler ve İnceleme</h2>
+            <p class="section-subtitle">Opsiyonel eklentileri seçin ve yapılandırmanızı inceleyin</p>
+
+            <div class="review-layout">
+                <!-- OPTIONS -->
+                <div class="options-card">
+                    <h3 class="card-title">
+                        <span class="material-icons">tune</span>
+                        Opsiyonel Eklentiler
+                    </h3>
+
+                    <label class="option-checkbox" id="opt-bags">
+                        <input type="checkbox" id="optBags" onchange="updateOptions()">
+                        <span class="checkbox-custom"></span>
+                        <span class="option-content">
+                            <span class="option-name">Üst Kapak Çantaları (×2)</span>
+                            <span class="option-desc">Belgeler, aletler veya küçük aksesuarlar için üst kapakta iki file çanta</span>
+                        </span>
+                    </label>
+
+                    <label class="option-checkbox" id="opt-wheels" style="display:none;">
+                        <input type="checkbox" id="optWheels" onchange="updateOptions()">
+                        <span class="checkbox-custom"></span>
+                        <span class="option-content">
+                            <span class="option-name">Tekerlekler</span>
+                            <span class="option-desc">Kolay taşıma için dayanıklı tekerlekler</span>
+                        </span>
+                    </label>
+
+                    <label class="option-checkbox" id="opt-pull" style="display:none;">
+                        <input type="checkbox" id="optPull" onchange="updateOptions()">
+                        <span class="checkbox-custom"></span>
+                        <span class="option-content">
+                            <span class="option-name">Teleskopik Çekme Kolu</span>
+                            <span class="option-desc">Tekerlekli taşıma için geri çekilebilir çekme kolu</span>
+                        </span>
+                    </label>
+                </div>
+
+                <!-- REVIEW -->
+                <div class="review-card">
+                    <h3 class="card-title">
+                        <span class="material-icons">receipt_long</span>
+                        Yapılandırma Özeti
+                    </h3>
+                    <div id="reviewSummary" class="review-summary"></div>
+
+                    <!-- Mini preview canvases -->
+                    <div class="review-previews">
+                        <div class="preview-box">
+                            <h4>Alt Katman</h4>
+                            <div id="preview-bottom" class="mini-preview"></div>
+                        </div>
+                        <div class="preview-box">
+                            <h4>Üst Katman</h4>
+                            <div id="preview-top" class="mini-preview"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- COLOR SELECTION -->
+                <div class="color-card">
+                    <h3 class="card-title">
+                        <span class="material-icons">palette</span>
+                        Çanta Rengi
+                    </h3>
+                    <div class="color-options">
+                        <label class="color-option selected" data-color="orange" onclick="selectColor('orange')">
+                            <span class="color-swatch orange-swatch"></span>
+                            <span>Turuncu</span>
+                        </label>
+                        <label class="color-option" data-color="black" onclick="selectColor('black')">
+                            <span class="color-swatch black-swatch"></span>
+                            <span>Siyah</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Shopify Add to Cart -->
+            <div class="cart-section">
+                <button class="add-to-cart-btn" onclick="addToCart()">
+                    <span class="material-icons">shopping_cart</span>
+                    Özel Çantayı Sepete Ekle
+                </button>
+                <p class="cart-note">Özel yapılandırmanız siparişinizle birlikte kaydedilecektir</p>
+            </div>
+
+            <!-- Hidden form for Shopify -->
+            <form id="shopifyCartForm" action="/cart/add" method="POST" style="display:none;">
+                <input type="hidden" name="id" id="shopifyVariantId" value="">
+                <input type="hidden" name="quantity" value="1">
+                <input type="hidden" name="properties[Case Type]" id="propCaseType" value="">
+                <input type="hidden" name="properties[Case Color]" id="propCaseColor" value="">
+                <input type="hidden" name="properties[Bottom Layer Config]" id="propBottomLayer" value="">
+                <input type="hidden" name="properties[Top Layer Config]" id="propTopLayer" value="">
+                <input type="hidden" name="properties[Top Cover Bags]" id="propBags" value="No">
+                <input type="hidden" name="properties[Wheels]" id="propWheels" value="No">
+                <input type="hidden" name="properties[Pull Handle]" id="propPull" value="No">
+                <input type="hidden" name="properties[Configuration JSON]" id="propConfigJSON" value="">
+            </form>
+        </section>
+
+        <!-- NAVIGATION -->
+        <div class="nav-buttons">
+            <button class="nav-btn prev-btn" id="prevBtn" onclick="prevStep()" style="display:none;">
+                <span class="material-icons">arrow_back</span>
+                Geri
+            </button>
+            <button class="nav-btn next-btn" id="nextBtn" onclick="nextStep()">
+                İleri
+                <span class="material-icons">arrow_forward</span>
+            </button>
+        </div>
+    </main>
+
+    <script src="configurator.js"></script>
+</body>
+</html>

@@ -1,0 +1,883 @@
+/* ===== FORTIFY ARMORY — Gun Case Configurator Styles ===== */
+/* Scoped under .fa-configurator to avoid conflicts with your Shopify theme */
+
+.fa-configurator *, .fa-configurator *::before, .fa-configurator *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+.fa-configurator {
+    --fa-orange: #E87A1E;
+    --fa-orange-dark: #C66A15;
+    --fa-orange-light: #F5A623;
+    --fa-black: #1A1A1A;
+    --fa-bg: #0F0F0F;
+    --fa-surface: #1E1E1E;
+    --fa-surface-2: #2A2A2A;
+    --fa-surface-3: #333333;
+    --fa-border: #3A3A3A;
+    --fa-text: #E8E8E8;
+    --fa-text-dim: #999;
+    --fa-text-muted: #666;
+    --fa-success: #4CAF50;
+    --fa-danger: #F44336;
+    --fa-warning: #FFC107;
+    --fa-foam-dark: #1A1A1A;
+    --fa-foam-cutout: #2D2D2D;
+    --fa-radius: 12px;
+    --fa-radius-sm: 8px;
+    --fa-shadow: 0 4px 24px rgba(0,0,0,0.4);
+
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--fa-bg);
+    color: var(--fa-text);
+    padding-bottom: 40px;
+}
+
+/* ===== HEADER ===== */
+.fa-configurator .fa-header {
+    background: var(--fa-surface);
+    border-bottom: 2px solid var(--fa-orange);
+    padding: 16px 32px;
+}
+
+.fa-configurator .fa-header-inner {
+    max-width: 1600px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.fa-configurator .fa-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.fa-configurator .fa-logo-icon { font-size: 28px; }
+
+.fa-configurator .fa-logo-text {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 24px;
+    letter-spacing: 2px;
+    color: var(--fa-text);
+}
+
+.fa-configurator .fa-logo-accent { color: var(--fa-orange); }
+
+.fa-configurator .fa-header-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--fa-text-dim);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+/* ===== STEPS BAR ===== */
+.fa-configurator .fa-steps-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 32px;
+    gap: 0;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.fa-configurator .fa-step {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    opacity: 0.4;
+    transition: opacity 0.3s;
+}
+
+.fa-configurator .fa-step.active { opacity: 1; }
+.fa-configurator .fa-step.completed { opacity: 0.8; }
+
+.fa-configurator .fa-step-number {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--fa-surface-2);
+    border: 2px solid var(--fa-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    transition: all 0.3s;
+}
+
+.fa-configurator .fa-step.active .fa-step-number {
+    background: var(--fa-orange);
+    border-color: var(--fa-orange);
+    color: #fff;
+}
+
+.fa-configurator .fa-step.completed .fa-step-number {
+    background: var(--fa-success);
+    border-color: var(--fa-success);
+    color: #fff;
+}
+
+.fa-configurator .fa-step-label {
+    font-size: 14px;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.fa-configurator .fa-step-connector {
+    flex: 1;
+    height: 2px;
+    background: var(--fa-border);
+    margin: 0 16px;
+    min-width: 40px;
+}
+
+/* ===== STEP CONTENT ===== */
+.fa-configurator .fa-step-content {
+    display: none;
+    padding: 0 32px 32px;
+    max-width: 1600px;
+    margin: 0 auto;
+    animation: faFadeIn 0.4s ease;
+}
+
+.fa-configurator .fa-step-content.active { display: block; }
+
+@keyframes faFadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.fa-configurator .fa-section-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 32px;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 4px;
+}
+
+.fa-configurator .fa-section-subtitle {
+    text-align: center;
+    color: var(--fa-text-dim);
+    font-size: 15px;
+    margin-bottom: 32px;
+}
+
+/* ===== CASE SELECTOR (Step 1) ===== */
+.fa-configurator .fa-case-selector {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 24px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.fa-configurator .fa-case-card {
+    background: var(--fa-surface);
+    border: 2px solid var(--fa-border);
+    border-radius: var(--fa-radius);
+    padding: 32px;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+}
+
+.fa-configurator .fa-case-card:hover {
+    border-color: var(--fa-orange);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(232, 122, 30, 0.15);
+}
+
+.fa-configurator .fa-case-card.selected {
+    border-color: var(--fa-orange);
+    background: rgba(232, 122, 30, 0.05);
+}
+
+.fa-configurator .fa-case-badge {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: var(--fa-orange);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.fa-configurator .fa-case-icon {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.fa-configurator .fa-case-svg {
+    width: 160px;
+    height: auto;
+    color: var(--fa-orange);
+}
+
+.fa-configurator .fa-case-name {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.fa-configurator .fa-case-size {
+    color: var(--fa-text-dim);
+    font-size: 14px;
+    margin-bottom: 16px;
+}
+
+.fa-configurator .fa-case-features {
+    list-style: none;
+    margin-bottom: 20px;
+}
+
+.fa-configurator .fa-case-features li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    padding: 6px 0;
+    color: var(--fa-text);
+}
+
+.fa-configurator .fa-case-features .material-icons {
+    font-size: 18px;
+    color: var(--fa-success);
+}
+
+.fa-configurator .fa-case-colors {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.fa-configurator .fa-color-dot {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+
+.fa-configurator .fa-color-dot.orange { background: var(--fa-orange); }
+.fa-configurator .fa-color-dot.black { background: #333; border: 3px solid #555; }
+.fa-configurator .fa-color-dot.selected { border-color: var(--fa-text) !important; }
+
+/* ===== CONFIGURATOR LAYOUT (Step 2) ===== */
+.fa-configurator .fa-configurator-layout {
+    display: grid;
+    grid-template-columns: 260px 1fr 240px;
+    gap: 16px;
+    min-height: 600px;
+}
+
+.fa-configurator .fa-palette-panel,
+.fa-configurator .fa-info-panel {
+    background: var(--fa-surface);
+    border: 1px solid var(--fa-border);
+    border-radius: var(--fa-radius);
+    padding: 16px;
+    overflow-y: auto;
+    max-height: 700px;
+}
+
+.fa-configurator .fa-panel-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+    color: var(--fa-orange);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.fa-configurator .fa-panel-title .material-icons { font-size: 20px; }
+
+.fa-configurator .fa-palette-section {
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--fa-border);
+}
+
+.fa-configurator .fa-palette-section:last-child { border-bottom: none; }
+
+.fa-configurator .fa-palette-section-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--fa-text-dim);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.fa-configurator .fa-palette-section-title .material-icons {
+    font-size: 16px;
+    color: var(--fa-orange);
+}
+
+/* Weapon Selector */
+.fa-configurator .fa-field-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--fa-text-dim);
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.fa-configurator .fa-select-field {
+    width: 100%;
+    padding: 8px 10px;
+    background: var(--fa-surface-2);
+    border: 1px solid var(--fa-border);
+    border-radius: var(--fa-radius-sm);
+    color: var(--fa-text);
+    font-size: 13px;
+    font-family: inherit;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='%23999'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+}
+
+.fa-configurator .fa-select-field:focus {
+    outline: none;
+    border-color: var(--fa-orange);
+}
+
+.fa-configurator .fa-select-field:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.fa-configurator .fa-weapon-info {
+    background: var(--fa-surface-2);
+    border-radius: var(--fa-radius-sm);
+    padding: 8px 10px;
+    margin-top: 8px;
+    font-size: 12px;
+}
+
+.fa-configurator .fa-weapon-info.hidden { display: none; }
+
+.fa-configurator .fa-weapon-dims {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.fa-configurator .fa-dim-label {
+    color: var(--fa-text-dim);
+    font-weight: 600;
+}
+
+.fa-configurator .fa-dim-val {
+    color: var(--fa-orange);
+    font-weight: 500;
+    margin-right: 6px;
+}
+
+/* Palette Buttons */
+.fa-configurator .fa-palette-item-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 10px 12px;
+    background: var(--fa-surface-2);
+    border: 1px solid var(--fa-border);
+    border-radius: var(--fa-radius-sm);
+    color: var(--fa-text);
+    font-size: 13px;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 6px;
+    text-align: left;
+}
+
+.fa-configurator .fa-palette-item-btn:hover {
+    border-color: var(--fa-orange);
+    background: rgba(232, 122, 30, 0.1);
+}
+
+.fa-configurator .fa-palette-item-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.fa-configurator .fa-palette-item-btn:disabled:hover {
+    border-color: var(--fa-border);
+    background: var(--fa-surface-2);
+}
+
+.fa-configurator .fa-palette-item-btn .material-icons {
+    font-size: 18px;
+    color: var(--fa-orange);
+}
+
+.fa-configurator .fa-item-dim {
+    margin-left: auto;
+    font-size: 11px;
+    color: var(--fa-text-muted);
+}
+
+/* Item Previews */
+.fa-configurator .fa-item-preview {
+    display: inline-block;
+    border-radius: 3px;
+}
+
+.fa-configurator .fa-ammo-preview { width: 20px; height: 14px; background: #5D8A3C; border: 1px solid #4A7030; }
+.fa-configurator .fa-mag-preview { width: 8px; height: 18px; background: #5C5C5C; border: 1px solid #777; }
+.fa-configurator .fa-spray-preview { width: 10px; height: 20px; background: #2B5EA7; border: 1px solid #1E4A85; border-radius: 10px 10px 3px 3px; }
+.fa-configurator .fa-kit-preview { width: 22px; height: 12px; background: #6B4C2A; border: 1px solid #8B6642; }
+.fa-configurator .fa-ear-preview { width: 18px; height: 14px; background: #CC8800; border: 1px solid #AA7000; border-radius: 50%; }
+.fa-configurator .fa-glass-preview { width: 22px; height: 10px; background: transparent; border: 2px solid #607D8B; border-radius: 10px; }
+
+.fa-configurator .fa-palette-help {
+    font-size: 12px;
+    color: var(--fa-text-dim);
+    line-height: 1.8;
+}
+
+/* Canvas Area */
+.fa-configurator .fa-canvas-area {
+    display: flex;
+    flex-direction: column;
+}
+
+.fa-configurator .fa-layer-tabs {
+    display: flex;
+    gap: 2px;
+    margin-bottom: 2px;
+}
+
+.fa-configurator .fa-layer-tab {
+    flex: 1;
+    padding: 10px 16px;
+    background: var(--fa-surface);
+    border: 1px solid var(--fa-border);
+    border-bottom: none;
+    border-radius: var(--fa-radius-sm) var(--fa-radius-sm) 0 0;
+    color: var(--fa-text-dim);
+    font-size: 13px;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+}
+
+.fa-configurator .fa-layer-tab .material-icons { font-size: 18px; }
+
+.fa-configurator .fa-layer-tab.active {
+    background: var(--fa-surface-2);
+    color: var(--fa-orange);
+    border-color: var(--fa-orange);
+    border-bottom: 2px solid var(--fa-surface-2);
+}
+
+.fa-configurator .fa-canvas-wrapper {
+    flex: 1;
+    background: var(--fa-surface);
+    border: 1px solid var(--fa-border);
+    overflow: hidden;
+    min-height: 500px;
+    position: relative;
+}
+
+.fa-configurator #configurator-canvas {
+    width: 100%;
+    height: 100%;
+}
+
+.fa-configurator .fa-canvas-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 12px;
+    background: var(--fa-surface);
+    border: 1px solid var(--fa-border);
+    border-top: none;
+    border-radius: 0 0 var(--fa-radius-sm) var(--fa-radius-sm);
+}
+
+.fa-configurator .fa-tool-btn {
+    width: 36px;
+    height: 36px;
+    background: var(--fa-surface-2);
+    border: 1px solid var(--fa-border);
+    border-radius: 6px;
+    color: var(--fa-text-dim);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.fa-configurator .fa-tool-btn:hover {
+    border-color: var(--fa-orange);
+    color: var(--fa-orange);
+}
+
+.fa-configurator .fa-tool-btn .material-icons { font-size: 18px; }
+
+.fa-configurator .fa-toolbar-separator {
+    width: 1px;
+    height: 24px;
+    background: var(--fa-border);
+    margin: 0 8px;
+}
+
+.fa-configurator .fa-toolbar-info {
+    margin-left: auto;
+    font-size: 12px;
+    color: var(--fa-text-dim);
+}
+
+/* Info Panel */
+.fa-configurator .fa-selection-info,
+.fa-configurator .fa-layer-summary {
+    font-size: 13px;
+}
+
+.fa-configurator .fa-no-selection,
+.fa-configurator .fa-empty-summary {
+    color: var(--fa-text-muted);
+    font-size: 13px;
+    font-style: italic;
+}
+
+.fa-configurator .fa-selected-item-info {
+    background: var(--fa-surface-2);
+    border-radius: var(--fa-radius-sm);
+    padding: 12px;
+}
+
+.fa-configurator .fa-selected-item-info h4 {
+    font-family: 'Rajdhani', sans-serif;
+    color: var(--fa-orange);
+    margin-bottom: 8px;
+}
+
+.fa-configurator .fa-info-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+    font-size: 12px;
+    border-bottom: 1px solid var(--fa-border);
+}
+
+.fa-configurator .fa-info-row:last-child { border-bottom: none; }
+.fa-configurator .fa-info-label { color: var(--fa-text-dim); }
+.fa-configurator .fa-info-value { color: var(--fa-text); font-weight: 500; }
+
+.fa-configurator .fa-summary-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    font-size: 12px;
+    border-bottom: 1px solid var(--fa-border);
+}
+
+.fa-configurator .fa-summary-item:last-child { border-bottom: none; }
+.fa-configurator .fa-summary-count { color: var(--fa-orange); font-weight: 600; }
+
+/* ===== STEP 3: OPTIONS & REVIEW ===== */
+.fa-configurator .fa-review-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.fa-configurator .fa-options-card,
+.fa-configurator .fa-review-card,
+.fa-configurator .fa-color-card {
+    background: var(--fa-surface);
+    border: 1px solid var(--fa-border);
+    border-radius: var(--fa-radius);
+    padding: 24px;
+}
+
+.fa-configurator .fa-color-card { grid-column: 1 / -1; }
+
+.fa-configurator .fa-card-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 20px;
+    color: var(--fa-orange);
+}
+
+.fa-configurator .fa-card-title .material-icons { font-size: 22px; }
+
+/* Checkboxes */
+.fa-configurator .fa-option-checkbox {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px;
+    background: var(--fa-surface-2);
+    border: 1px solid var(--fa-border);
+    border-radius: var(--fa-radius-sm);
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 10px;
+}
+
+.fa-configurator .fa-option-checkbox:hover { border-color: var(--fa-orange); }
+.fa-configurator .fa-option-checkbox input { display: none; }
+
+.fa-configurator .fa-checkbox-custom {
+    width: 22px;
+    height: 22px;
+    min-width: 22px;
+    border: 2px solid var(--fa-border);
+    border-radius: 4px;
+    background: var(--fa-surface);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    margin-top: 2px;
+}
+
+.fa-configurator .fa-option-checkbox input:checked + .fa-checkbox-custom {
+    background: var(--fa-orange);
+    border-color: var(--fa-orange);
+}
+
+.fa-configurator .fa-option-checkbox input:checked + .fa-checkbox-custom::after {
+    content: '✓';
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.fa-configurator .fa-option-name { display: block; font-weight: 600; font-size: 14px; margin-bottom: 2px; }
+.fa-configurator .fa-option-desc { display: block; font-size: 12px; color: var(--fa-text-dim); }
+
+/* Review Summary */
+.fa-configurator .fa-review-summary { font-size: 14px; }
+
+.fa-configurator .fa-review-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--fa-border);
+}
+
+.fa-configurator .fa-review-row:last-child { border-bottom: none; }
+.fa-configurator .fa-review-label { color: var(--fa-text-dim); }
+.fa-configurator .fa-review-value { font-weight: 500; }
+
+.fa-configurator .fa-review-previews {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.fa-configurator .fa-preview-box h4 {
+    font-size: 12px;
+    color: var(--fa-text-dim);
+    margin-bottom: 8px;
+    text-align: center;
+}
+
+.fa-configurator .fa-mini-preview {
+    background: var(--fa-foam-dark);
+    border: 1px solid var(--fa-border);
+    border-radius: var(--fa-radius-sm);
+    height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: var(--fa-text-muted);
+}
+
+/* Color Options */
+.fa-configurator .fa-color-options { display: flex; gap: 16px; }
+
+.fa-configurator .fa-color-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px;
+    background: var(--fa-surface-2);
+    border: 2px solid var(--fa-border);
+    border-radius: var(--fa-radius-sm);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 500;
+    color: var(--fa-text);
+}
+
+.fa-configurator .fa-color-option:hover { border-color: var(--fa-orange); }
+.fa-configurator .fa-color-option.selected { border-color: var(--fa-orange); background: rgba(232, 122, 30, 0.1); }
+
+.fa-configurator .fa-color-swatch { width: 32px; height: 32px; border-radius: 50%; }
+.fa-configurator .fa-orange-swatch { background: var(--fa-orange); }
+.fa-configurator .fa-black-swatch { background: #333; border: 2px solid #555; }
+
+/* Cart */
+.fa-configurator .fa-cart-section { text-align: center; margin-top: 32px; }
+
+.fa-configurator .fa-add-to-cart-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 48px;
+    background: var(--fa-orange);
+    border: none;
+    border-radius: var(--fa-radius);
+    color: #fff;
+    font-size: 18px;
+    font-weight: 600;
+    font-family: 'Rajdhani', sans-serif;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-transform: uppercase;
+}
+
+.fa-configurator .fa-add-to-cart-btn:hover {
+    background: var(--fa-orange-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 24px rgba(232, 122, 30, 0.3);
+}
+
+.fa-configurator .fa-add-to-cart-btn .material-icons { font-size: 22px; }
+
+.fa-configurator .fa-cart-note {
+    margin-top: 12px;
+    font-size: 13px;
+    color: var(--fa-text-muted);
+}
+
+/* ===== NAV BUTTONS ===== */
+.fa-configurator .fa-nav-buttons {
+    display: flex;
+    justify-content: space-between;
+    max-width: 1600px;
+    margin: 24px auto;
+    padding: 0 32px;
+}
+
+.fa-configurator .fa-nav-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 28px;
+    border: 2px solid var(--fa-border);
+    border-radius: var(--fa-radius-sm);
+    background: var(--fa-surface);
+    color: var(--fa-text);
+    font-size: 14px;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.fa-configurator .fa-nav-btn:hover {
+    border-color: var(--fa-orange);
+    color: var(--fa-orange);
+}
+
+.fa-configurator .fa-nav-btn .material-icons { font-size: 20px; }
+
+.fa-configurator .fa-next-btn {
+    margin-left: auto;
+    background: var(--fa-orange);
+    border-color: var(--fa-orange);
+    color: #fff;
+}
+
+.fa-configurator .fa-next-btn:hover {
+    background: var(--fa-orange-dark);
+    border-color: var(--fa-orange-dark);
+    color: #fff;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1200px) {
+    .fa-configurator .fa-configurator-layout { grid-template-columns: 240px 1fr; }
+    .fa-configurator .fa-info-panel { display: none; }
+}
+
+@media (max-width: 900px) {
+    .fa-configurator .fa-configurator-layout { grid-template-columns: 1fr; }
+    .fa-configurator .fa-palette-panel { max-height: none; }
+    .fa-configurator .fa-canvas-wrapper { min-height: 400px; }
+    .fa-configurator .fa-review-layout { grid-template-columns: 1fr; }
+    .fa-configurator .fa-steps-bar { padding: 16px; }
+    .fa-configurator .fa-step-label { display: none; }
+}
+
+@media (max-width: 600px) {
+    .fa-configurator .fa-case-selector { grid-template-columns: 1fr; }
+    .fa-configurator .fa-step-content { padding: 0 16px 16px; }
+}
+
+/* ===== TOAST ===== */
+.fa-toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    padding: 14px 24px;
+    background: #1E1E1E;
+    border: 1px solid #E87A1E;
+    border-radius: 8px;
+    color: #E8E8E8;
+    font-size: 14px;
+    z-index: 10000;
+    animation: faSlideUp 0.3s ease;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Inter', sans-serif;
+}
+
+.fa-toast .material-icons { color: #E87A1E; }
+.fa-toast.error { border-color: #F44336; }
+.fa-toast.error .material-icons { color: #F44336; }
+
+@keyframes faSlideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
