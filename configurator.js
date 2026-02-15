@@ -1336,8 +1336,10 @@ function rotateSelected() {
         item.x = group.x();
         item.y = group.y();
         syncShadowPosition(item);
+        checkCollisions(group, item);
         mainLayer.draw();
         updateSelectionInfo(item);
+        showToast(`${item.name} — ${item.rotation}° döndürüldü`);
     }
 }
 
