@@ -592,6 +592,32 @@ function addGunToCanvas() {
     const itemW = isVertical ? 50 : model.length;
     const itemH = isVertical ? model.length : model.height;
 
+    // Position near existing guns if any
+    const targetLayer = isVertical ? 'top' : state.activeLayer;
+    const existingGuns = state.layers[targetLayer].filter(i => i.type === 'gun' && !i.isShadow);
+    let startX = boundsRect.x + 20;
+    let startY = boundsRect.y + 20;
+
+    if (existingGuns.length > 0) {
+        // Find the rightmost gun edge
+        const lastGun = existingGuns[existingGuns.length - 1];
+        const lastRight = lastGun.x + lastGun.wMM * state.scale;
+        const gap = 15; // px gap between guns
+
+        // Check if it fits to the right of the last gun
+        if (lastRight + gap + itemW * state.scale <= boundsRect.x + boundsRect.w) {
+            startX = lastRight + gap;
+            startY = lastGun.y;
+        } else {
+            // Doesn't fit horizontally — try below the last gun
+            const lastBottom = lastGun.y + lastGun.hMM * state.scale;
+            if (lastBottom + gap + itemH * state.scale <= boundsRect.y + boundsRect.h) {
+                startX = boundsRect.x + 20;
+                startY = lastBottom + gap;
+            }
+        }
+    }
+
     const item = {
         id, type: 'gun',
         name: `${brand.name} ${model.name}`,
@@ -607,15 +633,17 @@ function addGunToCanvas() {
         imageUrl: model.image || null,
         hasOptic: withOptic,
         opticItemId: null,
-        x: boundsRect.x + 20,
-        y: boundsRect.y + 20,
+        x: startX,
+        y: startY,
         rotation: 0,
         color: '#8B4513', stroke: '#A0522D',
         resizable: true
     };
 
-    state.layers.top.push(item);
-    createCanvasItem(item);
+    state.layers[targetLayer].push(item);
+    if (targetLayer === state.activeLayer) {
+        createCanvasItem(item);
+    }
 
     // Create shadow on bottom layer for vertical items
     if (isVertical) {
@@ -643,8 +671,8 @@ function addGunToCanvas() {
             parentGunId: item.id,
             wMM: 50, hMM: 50, dMM: 50,
             defaultWMM: 50, defaultHMM: 50, defaultDMM: 50,
-            x: boundsRect.x + 20 + itemW * state.scale + 10,
-            y: boundsRect.y + 20,
+            x: startX + itemW * state.scale + 10,
+            y: startY,
             rotation: 0,
             color: '#5C6BC0', stroke: '#3F51B5',
             resizable: true
