@@ -188,7 +188,7 @@ const CASE_DEFS = {
         hasWheels: true,
         hasPull: true,
         maxBags: 2,
-        blockedZone: { w: 100, h: 50, label: 'Kulp / Kilit Alanı' }
+        blockedZone: { w: 80, h: 40, label: 'Kulp / Kilit Alanı' }
     },
     small: {
         name: 'Fortify Kompakt Çanta',
@@ -198,7 +198,7 @@ const CASE_DEFS = {
         hasWheels: false,
         hasPull: false,
         maxBags: 2,
-        blockedZone: { w: 100, h: 50, label: 'Kulp / Kilit Alanı' }
+        blockedZone: { w: 80, h: 40, label: 'Kulp / Kilit Alanı' }
     }
 };
 
